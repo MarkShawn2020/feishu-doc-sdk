@@ -1,0 +1,19 @@
+{
+  "name": "feishu-doc-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^9.4.0",
+    "loadsh": "^0.0.4"
+  },
+  "devDependencies": {
+    "jest": "^29.0.2",
+    "ts-node": "^10.9.1"
+  }
+}
