@@ -1,9 +1,6 @@
-const path = require("path");
+import * as path from "path";
 
-function getFileKey(filePath) {
+export function getFileKey(filePath) {
   return path.basename(filePath);
 }
 
-module.exports = {
-  getFileKey,
-};

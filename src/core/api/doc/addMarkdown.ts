@@ -1,10 +1,11 @@
-const fs = require("fs");
-const path = require("path");
-const {getChecksumFromFile} = require("../../algo/getChecksum");
-const {getFileSize} = require("../../utils/getFileSize");
-const {headersAddDoc, spaceInfo, host} = require("../../config");
+import {getFileSize} from "../../utils/getFileSize";
+import * as path from "path";
+import {headersAddDoc, host, spaceInfo} from "../../config";
+import {getChecksumFromFile} from "../../algo/getChecksum";
+import * as fs from "fs";
 
-function getUrl(filePath, fileKey, mountNodeToken) {
+
+export function getUrl(filePath, fileKey, mountNodeToken) {
   let fileSize = getFileSize(filePath);
   let fileChecksum = getChecksumFromFile(filePath);
   const url =
@@ -21,7 +22,7 @@ function getUrl(filePath, fileKey, mountNodeToken) {
   return url;
 }
 
-function getWikiTokenFromDocItem(docItem) {
+export function getWikiTokenFromDocItem(docItem) {
   return docItem.extra.node_token
 }
 
@@ -33,7 +34,7 @@ function getWikiTokenFromDocItem(docItem) {
  * @param fileKey
  * @returns {Promise<void>}
  */
-async function addMarkdown(
+export async function addMarkdown(
   filePath,
   headers,
   mountNodeToken,
@@ -62,7 +63,7 @@ async function addMarkdown(
   return res;
 }
 
-async function addMarkdownFromFilePath(fp, fileKey = undefined) {
+export async function addMarkdownFromFilePath(fp, fileKey = undefined) {
   return await addMarkdown(
     fp,
     headersAddDoc,
@@ -70,8 +71,3 @@ async function addMarkdownFromFilePath(fp, fileKey = undefined) {
     fileKey
   );
 }
-
-module.exports = {
-  addMarkdown,
-  addMarkdownFromFilePath,
-};

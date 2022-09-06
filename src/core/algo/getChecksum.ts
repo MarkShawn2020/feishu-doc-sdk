@@ -1,11 +1,11 @@
-const fs = require("fs");
-
 /**
  * ref: https://blog.csdn.net/LightUpHeaven/article/details/81240862
  * @param str
  * @returns {Uint8Array}
  */
-function string2Uint8Array(str) {
+import * as fs from "fs";
+
+function string2Uint8Array(str: string): Uint8Array {
   var arr = [];
   for (var i = 0, j = str.length; i < j; ++i) {
     arr.push(str.charCodeAt(i));
@@ -21,11 +21,10 @@ function string2Uint8Array(str) {
  * @returns {*}
  * @constructor
  */
-function Ds(e) {
+function Ds(e: Uint8Array) {
   return (function (e) {
     e =
       "string" == typeof e
-        // added e:
         ? (function (e: string) {
           for (
             var t = new Uint8Array(e.length), r = 0, n = e.length;
@@ -55,7 +54,7 @@ function Ds(e) {
   })(new Uint8Array(e)).toString();
 }
 
-function getChecksumFromString(s) {
+export function getChecksumFromString(s) {
   return Ds(string2Uint8Array(s));
 }
 
@@ -64,12 +63,8 @@ function getChecksumFromString(s) {
  * @param fp
  * @returns {*}
  */
-function getChecksumFromFile(fp) {
+export function getChecksumFromFile(fp) {
   return getChecksumFromString(fs.readFileSync(fp, {encoding: "binary"}));
 }
 
-module.exports = {
-  getChecksumFromString,
-  getChecksumFromFile,
-};
 

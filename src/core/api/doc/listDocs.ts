@@ -1,15 +1,15 @@
-const { spaceInfo } = require("../../config");
-const _ = require("loadsh");
+import _ = require("lodash");
+import {spaceInfo} from "../../config";
 
-async function listDocs(headers, filterName = undefined, onlyToken = false) {
+export async function listDocs(headers, filterName = undefined, onlyToken = false) {
   const parentToken = spaceInfo.docToken_QVR;
   const res = await (
     await fetch(
       spaceInfo.urlListDocs +
-        `?space_id=${spaceInfo.space_id}` +
-        `&wiki_token=${parentToken}` +
-        "&expand_shortcut=true" +
-        "&exclude_fields=5",
+      `?space_id=${spaceInfo.space_id}` +
+      `&wiki_token=${parentToken}` +
+      "&expand_shortcut=true" +
+      "&exclude_fields=5",
       {
         headers,
         body: null,
@@ -27,7 +27,3 @@ async function listDocs(headers, filterName = undefined, onlyToken = false) {
   // console.debug(JSON.stringify(data, null, 2));
   return data;
 }
-
-module.exports = {
-  listDocs,
-};
