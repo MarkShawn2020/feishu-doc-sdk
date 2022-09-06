@@ -1,29 +1,48 @@
-import _ = require("lodash");
-import {spaceInfo} from "../../config";
+import {IResSuccessBase} from "../base";
+import {IHeadersListDocs} from "../../account/headers";
 
-export async function listDocs(headers, filterName = undefined, onlyToken = false) {
-  const parentToken = spaceInfo.docToken_QVR;
-  const res = await (
-    await fetch(
-      spaceInfo.urlListDocs +
-      `?space_id=${spaceInfo.space_id}` +
-      `&wiki_token=${parentToken}` +
-      "&expand_shortcut=true" +
-      "&exclude_fields=5",
+/**
+ * @see sample: {@link import('../../../../sample/sensitive/resListDocsItem.json')}
+ */
+export interface IResListDocsItem {
+  has_child: boolean
+  obj_token: string
+  obj_type: number
+  origin_is_external: boolean
+  origin_space_id: string
+  origin_url: string
+  origin_wiki_token: string
+  parent_wiki_token: string
+  secret_key_delete: boolean
+  sort_id: number
+  space_id: string
+  title: string
+  url: string
+  wiki_node_type: number
+  wiki_token: string
+
+}
+
+export interface IResListDocs extends IResSuccessBase {
+  data: Record<string, IResListDocsItem[]>
+}
+
+export interface IReqListDocs {
+  parentToken: string
+  space_id: string
+  urlListDocs: string
+  headersListDocs: IHeadersListDocs
+}
+
+export async function listDocs(props: IReqListDocs): Promise<IResListDocs> {
+  const url = `${props.urlListDocs}?space_id=${props.space_id}&wiki_token=${props.parentToken}&expand_shortcut=true&exclude_fields=5`
+  return await (
+    await fetch(url,
       {
-        headers,
+        headers: props.headersListDocs,
         body: null,
         method: "GET",
       }
     )
   ).json();
-  let data = res.data[parentToken];
-  if (filterName !== undefined) {
-    data = data.filter((item) => new RegExp(filterName).test(item.title));
-  }
-  if (onlyToken) {
-    data = data.map((item) => _.pick(item, ["title", "wiki_token"]));
-  }
-  // console.debug(JSON.stringify(data, null, 2));
-  return data;
 }

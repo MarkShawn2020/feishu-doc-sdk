@@ -1,8 +1,9 @@
 import {getFileSize} from "../../utils/getFileSize";
 import * as path from "path";
-import {headersAddDoc, host, spaceInfo} from "../../config";
 import {getChecksumFromFile} from "../../algo/getChecksum";
 import * as fs from "fs";
+import {IHeadersAddDoc} from "../../account/headers";
+import {IResSuccessBase} from "../base";
 
 
 export function getUrl(filePath, fileKey, mountNodeToken) {
@@ -26,48 +27,48 @@ export function getWikiTokenFromDocItem(docItem) {
   return docItem.extra.node_token
 }
 
+export interface IReqAddDocFromFile {
+  filePath: string
+  headersAddDoc: IHeadersAddDoc
+  parentToken: string
+  fileKey: string | undefined
+}
+
+/**
+ * @see sample: {@link import('../../../../sample/sensitive/resAddDoc.json')}
+ */
+export interface IResAddDoc extends IResSuccessBase {
+  "data": {
+    "data_version": string,
+    "extra": {
+      "node_token": string
+    },
+    "file_token": string,
+    "version": string
+  }
+}
+
 /**
  *
- * @param filePath
- * @param headers
- * @param mountNodeToken: TODO: generate it
- * @param fileKey
+ * todo: support other file formats (now only implemented markdown)
  * @returns {Promise<void>}
  */
-export async function addMarkdown(
-  filePath,
-  headers,
-  mountNodeToken,
-  fileKey = undefined
-) {
+export async function addDocFromFile(props: IReqAddDocFromFile): Promise<IResAddDoc> {
   // const fileContent = fs.readFileSync(filePath, {encoding: "ascii"}).toString('utf8'); // https://stackoverflow.com/a/7807717/9422455 // 没用，飞书还是现实乱码
   // const fileContent = fs.readFileSync(filePath, {encoding: "binary"}); // FAILED: the actual size is inconsistent with the parameter declaration size
   // const fileContent = fs.readFileSync(filePath, {encoding: "ascii"}); // FAILED: checksum Invalid
-  const fileContent = fs.readFileSync(filePath, {encoding: "utf8"});
-  if (undefined === fileKey) {
-    //  use fileName from filePath
-    fileKey = path.basename(filePath);
-  }
-  const boundary = headers["content-type"].split("----")[1];
+  const fileContent = fs.readFileSync(props.filePath, {encoding: "utf8"});
+  const fileKey = props.fileKey || path.basename(props.filePath)
+  const boundary = props.headersAddDoc["content-type"].split("----")[1];
   const body = `------${boundary}\nContent-Disposition: form-data; name="file"; filename="${fileKey}"\nContent-Type: text/markdown\n\n` +
     fileContent +
     `\n------${boundary}--\n`
   // fs.writeFileSync('dump.md', body) // debug for transformed string
 
-  const res = await (await fetch(getUrl(filePath, fileKey, mountNodeToken), {
-    headers,
+  const res = await (await fetch(getUrl(props.filePath, fileKey, props.parentToken), {
+    headers: props.headersAddDoc,
     body,
     method: "POST",
   })).json();
-  console.log(`added file at: ${host}/wiki/${getWikiTokenFromDocItem(res.data)}`)
   return res;
-}
-
-export async function addMarkdownFromFilePath(fp, fileKey = undefined) {
-  return await addMarkdown(
-    fp,
-    headersAddDoc,
-    spaceInfo.mountNodeToken,
-    fileKey
-  );
 }
