@@ -1,5 +1,6 @@
 import {IResSuccessBase} from "../base";
 import {IHeadersListDocs} from "../../account/headers";
+import axios from "axios";
 
 /**
  * @see sample: {@link import('../../../../sample/sensitive/resListDocsItem.json')}
@@ -37,12 +38,10 @@ export interface IReqListDocs {
 export async function listDocs(props: IReqListDocs): Promise<IResListDocs> {
   const url = `${props.urlListDocs}?space_id=${props.space_id}&wiki_token=${props.parentToken}&expand_shortcut=true&exclude_fields=5`
   return await (
-    await fetch(url,
+    await axios.get(url,
       {
         headers: props.headersListDocs,
-        body: null,
-        method: "GET",
       }
     )
-  ).json();
+  ).data;
 }

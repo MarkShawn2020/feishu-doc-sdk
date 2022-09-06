@@ -8,23 +8,24 @@ import {Account} from "./core/account/account";
 import {IResListDocs, IResListDocsItem} from "./core/api/doc/listDocs";
 
 
-const account: Account = new Account(JSON.parse(fs.readFileSync("./config/account.json", {encoding: 'utf-8'})))
+const accountFilePath = path.resolve(__dirname, "config/account.json")
+const account: Account = new Account(JSON.parse(fs.readFileSync(accountFilePath, {encoding: 'utf-8'})))
 
 const program = new Command();
 
 program
   .command("list")
-  .option("-n, --filterName <string>", "filter docs by name (regex supported)")
+  .option("-n, --regexTitle <string>", "filter docs by name (regex supported)")
   .option("-t, --onlyToken", "return only wiki_token of docs")
   // action doesn't return
   .action(async (opts) => {
     let res: IResListDocs = await account.apiListDocs()
-    let docs: Partial<IResListDocsItem>[] = res.data[account.space.mountNodeToken]
-    if (opts.filterName) {
-      docs = docs.filter(doc => new RegExp(opts.filterName).test(doc.title))
+    let docs: Pick<IResListDocsItem, "title" | "wiki_token">[] = res.data[account.space.mountNodeToken]
+    if (opts.regexTitle) {
+      docs = docs.filter(doc => new RegExp(opts.regexTitle).test(doc.title))
     }
     if (opts.onlyToken) {
-      docs.map(doc => _.pick(doc, ['title', 'wiki_token']))
+      docs = docs.map(doc => _.pick(doc, ['title', 'wiki_token']))
     }
     console.log(docs)
   });

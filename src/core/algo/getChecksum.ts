@@ -54,7 +54,7 @@ function Ds(e: Uint8Array) {
   })(new Uint8Array(e)).toString();
 }
 
-export function getChecksumFromString(s) {
+export function getChecksumFromString(s: string): string {
   return Ds(string2Uint8Array(s));
 }
 
@@ -63,7 +63,7 @@ export function getChecksumFromString(s) {
  * @param fp
  * @returns {*}
  */
-export function getChecksumFromFile(fp) {
+export function getChecksumFromFile(fp: string): string {
   return getChecksumFromString(fs.readFileSync(fp, {encoding: "binary"}));
 }
 

@@ -5,6 +5,6 @@
  */
 import * as fs from "fs";
 
-export const getFileSize = (fp) => {
+export const getFileSize = (fp: string) => {
   return fs.readFileSync(fp, {encoding: 'binary'}).length;
 };

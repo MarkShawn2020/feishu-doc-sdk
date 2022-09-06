@@ -48,7 +48,7 @@ export class Account {
     })
   }
 
-  public async apiAddDoc(filePath: string, fileKey: string = undefined) {
+  public async apiAddDoc(filePath: string, fileKey: string | undefined = undefined) {
     return await addDocFromFile({
       filePath,
       fileKey,

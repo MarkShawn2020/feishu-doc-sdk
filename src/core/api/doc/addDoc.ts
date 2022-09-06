@@ -1,12 +1,16 @@
-import {getFileSize} from "../../utils/getFileSize";
 import * as path from "path";
-import {getChecksumFromFile} from "../../algo/getChecksum";
 import * as fs from "fs";
-import {IHeadersAddDoc} from "../../account/headers";
+
+import axios from "axios";
+
 import {IResSuccessBase} from "../base";
+import {getFileSize} from "../../utils/getFileSize";
+import {getChecksumFromFile} from "../../algo/getChecksum";
+import {IHeadersAddDoc} from "../../account/headers";
 
+const FormData = require('form-data')
 
-export function getUrl(filePath, fileKey, mountNodeToken) {
+export function getUrl(filePath: string, fileKey: string | undefined, mountNodeToken: string) {
   let fileSize = getFileSize(filePath);
   let fileChecksum = getChecksumFromFile(filePath);
   const url =
@@ -23,10 +27,6 @@ export function getUrl(filePath, fileKey, mountNodeToken) {
   return url;
 }
 
-export function getWikiTokenFromDocItem(docItem) {
-  return docItem.extra.node_token
-}
-
 export interface IReqAddDocFromFile {
   filePath: string
   headersAddDoc: IHeadersAddDoc
@@ -41,7 +41,7 @@ export interface IResAddDoc extends IResSuccessBase {
   "data": {
     "data_version": string,
     "extra": {
-      "node_token": string
+      "node_token": string // wiki_token
     },
     "file_token": string,
     "version": string
@@ -57,18 +57,13 @@ export async function addDocFromFile(props: IReqAddDocFromFile): Promise<IResAdd
   // const fileContent = fs.readFileSync(filePath, {encoding: "ascii"}).toString('utf8'); // https://stackoverflow.com/a/7807717/9422455 // 没用，飞书还是现实乱码
   // const fileContent = fs.readFileSync(filePath, {encoding: "binary"}); // FAILED: the actual size is inconsistent with the parameter declaration size
   // const fileContent = fs.readFileSync(filePath, {encoding: "ascii"}); // FAILED: checksum Invalid
-  const fileContent = fs.readFileSync(props.filePath, {encoding: "utf8"});
+  const fileContent = fs.readFileSync(props.filePath, {encoding: "utf8"}); // YES, utf-8 yyds !
   const fileKey = props.fileKey || path.basename(props.filePath)
-  const boundary = props.headersAddDoc["content-type"].split("----")[1];
-  const body = `------${boundary}\nContent-Disposition: form-data; name="file"; filename="${fileKey}"\nContent-Type: text/markdown\n\n` +
-    fileContent +
-    `\n------${boundary}--\n`
-  // fs.writeFileSync('dump.md', body) // debug for transformed string
 
-  const res = await (await fetch(getUrl(props.filePath, fileKey, props.parentToken), {
+  const formData = new FormData();
+  formData.append("file", fileContent, fileKey)
+  const res = await (await axios.post(getUrl(props.filePath, fileKey, props.parentToken), formData, {
     headers: props.headersAddDoc,
-    body,
-    method: "POST",
-  })).json();
+  })).data;
   return res;
 }

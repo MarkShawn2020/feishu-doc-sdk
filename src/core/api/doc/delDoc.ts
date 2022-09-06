@@ -1,6 +1,7 @@
 import {IReqListDocs, IResListDocsItem, listDocs} from "./listDocs";
 import {IResSuccessBase} from "../base";
 import {IHeadersDelDoc} from "../../account/headers";
+import axios from "axios";
 
 export interface IDelDocPayload {
   space_id: string
@@ -33,12 +34,10 @@ export async function delDoc(props: IReqDelDoc): Promise<IResDelDoc> {
   console.log(`deleting file of token: ${props.payload.wiki_token}`);
   let body = JSON.stringify({...props.payload, auto_delete_mode: 0});
   const delRes = await (
-    await fetch(props.url, {
+    await axios.post(props.url, body, {
       headers: props.headers,
-      body,
-      method: "POST",
     })
-  ).json();
+  ).data;
   console.log(delRes)
   return delRes
 }
