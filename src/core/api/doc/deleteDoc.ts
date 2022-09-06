@@ -1,8 +1,8 @@
-const { headersDelDoc, spaceInfo, headersBase} = require("../../config");
+const {headersDelDoc, spaceInfo, headersBase} = require("../../config");
 const {listDocs} = require("./listDocs");
 
 async function deleteDoc(url, headers, docInfo) {
-  let body = JSON.stringify({ ...docInfo, auto_delete_mode: 0 });
+  let body = JSON.stringify({...docInfo, auto_delete_mode: 0});
   return await (
     await fetch(url, {
       headers,
@@ -36,13 +36,3 @@ module.exports = {
   deleteDocOfToken,
   deleteDocsOfName,
 };
-
-if (require.main === module) {
-  const docInfo = {
-    space_id: spaceInfo.space_id,
-    synergy_uuid: spaceInfo.synergy_uuid,
-    wiki_token: "wikcnAj7hsoJNmMoqTlNugcOOeg",
-  };
-
-  deleteDoc(docDelUrl, headersDelDoc, docInfo);
-}

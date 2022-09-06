@@ -25,7 +25,8 @@ function Ds(e) {
   return (function (e) {
     e =
       "string" == typeof e
-        ? (function (e) {
+        // added e:
+        ? (function (e: string) {
           for (
             var t = new Uint8Array(e.length), r = 0, n = e.length;
             r < n;
