@@ -49,12 +49,14 @@ export class Account {
   }
 
   public async apiAddDoc(filePath: string, fileKey: string | undefined = undefined) {
-    return await addDocFromFile({
+    const res = await addDocFromFile({
       filePath,
       fileKey,
       headersAddDoc: this.createHeadersAddDoc(),
       parentToken: this.space.mountNodeToken
     })
+    console.log("added at:", this.getUrlAddDoc(res.data.extra.node_token)) 
+    return res
   }
 
   public async apiDelDocOfWikiToken(wiki_token: string) {

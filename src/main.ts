@@ -1,3 +1,4 @@
+#!/usr/local/bin/ts-node
 import * as fs from "fs";
 import * as path from "path";
 
@@ -65,7 +66,7 @@ program
   .argument("-f, --filePath <string>", "file path to upload")
   .option('-k, --fileKey <string>', "file key, i.e. file name to show in sidebar")
   .option('-p, --prefix <string>', "prefix for fileKey")
-  .option("-m, --regexTitle <string>", "delete files of names (regex supported)")
+  .option("-r, --regexTitle <string>", "delete files of names (regex supported)")
   .action(async (fp, opts) => {
     const targetKey = [opts.prefix, opts.fileKey || path.basename(fp)].join('')
     await account.apiDelDocsOfRegexTitle(opts.regexTitle || targetKey)

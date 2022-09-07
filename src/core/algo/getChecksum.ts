@@ -3,7 +3,6 @@
  * @param str
  * @returns {Uint8Array}
  */
-import * as fs from "fs";
 
 function string2Uint8Array(str: string): Uint8Array {
   var arr = [];
@@ -56,15 +55,6 @@ function Ds(e: Uint8Array) {
 
 export function getChecksumFromString(s: string): string {
   return Ds(string2Uint8Array(s));
-}
-
-/**
- * 编码必须是 `binary`，用中文文本测试即可明了, sample file: /Users/mark/my-learning/my-website/my-documents/my-private-documents/arpara/public/techs/android-framework/quli/compile.md
- * @param fp
- * @returns {*}
- */
-export function getChecksumFromFile(fp: string): string {
-  return getChecksumFromString(fs.readFileSync(fp, {encoding: "binary"}));
 }
 
 
