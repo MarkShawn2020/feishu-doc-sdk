@@ -38,8 +38,7 @@ program
   .option('-p, --prefix <string>', "prefix for fileKey")
   .action(async (fp, opts) => {
     const targetKey = [opts.prefix, opts.fileKey || path.basename(fp)].join('')
-    const res = await account.apiAddDoc(fp, targetKey)
-    console.log(res.data)
+    await account.apiAddDoc(fp, targetKey)
   });
 
 program
