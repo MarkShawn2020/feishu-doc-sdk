@@ -6,7 +6,7 @@ import axios from "axios";
 import {IResSuccessBase} from "../base";
 import {getChecksumFromString} from "../../algo/getChecksum";
 import {IHeadersAddDoc} from "../../account/headers";
-import {createBlogRef} from "../../utils/filepath2blog";
+import {transBlog2Feishu} from "../../utils/filepath2blog";
 
 const FormData = require('form-data')
 
@@ -76,8 +76,7 @@ export async function addDocFromFile(props: IReqAddDocFromFile): Promise<IResAdd
   // const fileContent = fs.readFileSync(filePath, {encoding: "ascii"}).toString('utf8'); // https://stackoverflow.com/a/7807717/9422455 // 没用，飞书还是现实乱码
   // const fileContent = fs.readFileSync(filePath, {encoding: "binary"}); // FAILED: the actual size is inconsistent with the parameter declaration size
   // const fileContent = fs.readFileSync(filePath, {encoding: "ascii"}); // FAILED: checksum Invalid
-  let fileContent = fs.readFileSync(props.filePath, {encoding: "utf8"}); // YES, utf-8 yyds !
-  fileContent = createBlogRef(props.filePath) + fileContent
+  const fileContent = transBlog2Feishu(props.filePath)
   const fileKey = props.fileKey || path.basename(props.filePath)
 
   const url = getUrl(Buffer.from(fileContent).toString('binary'), fileKey, props.parentToken)
