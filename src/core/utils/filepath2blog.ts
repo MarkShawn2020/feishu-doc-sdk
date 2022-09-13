@@ -57,7 +57,7 @@ export const transBlog2Feishu = (fp: string): string => {
   // 专用于在飞书文档内生成博客链接，并自动镶嵌到文档抬头（但不会同步在目标博客内）
   const blogPath = filepath2blog(fp)
   if (blogPath) {
-    content = `\n> For better reading experience, refer to [blog: ${title}](${blogPath}).\n` + content
+    content = `\n> // DO NOT EDIT THIS DOC, SINCE IT IS SYNCED PROGRAMMATICALLY. \n>\n>For better reading experience, refer to [blog: ${title}](${blogPath}).\n` + content
   }
 
   return content
