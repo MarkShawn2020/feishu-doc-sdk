@@ -1,4 +1,4 @@
-import {RE_COMMENT, RE_FRONTMATTERS, RE_TITLE} from "../src/core/utils/filepath2blog";
+import {RE_ARPARA_END, RE_COMMENT, RE_FRONTMATTERS, RE_HEADING_1} from "../src/core/utils/filepath2blog";
 
 describe('test regex', function () {
   test('test frontmatters', () => {
@@ -22,7 +22,12 @@ describe('test regex', function () {
   test('test match title', () => {
     const testString1 = 'start\n# title1\n# title2\n```txt\n# title3\n```\n# title4\nend'
     const testString2 = 'start\n```txt\n# title3\n```\n# title4\n# title1\n# title2\nend'
-    expect(testString1.match(RE_TITLE)[1]).toBe('title1')
-    expect(testString2.match(RE_TITLE)[1]).toBe('title3')
+    expect(testString1.match(RE_HEADING_1)[1]).toBe('title1')
+    expect(testString2.match(RE_HEADING_1)[1]).toBe('title3')
+  })
+
+  test('drop ARPARA-END', () => {
+    const testString = 'lll\nhhh\n<!-- ARPARA-END -->\n111\n222'
+    expect(testString.split(RE_ARPARA_END)[0]).toBe('lll\nhhh\n')
   })
 });
